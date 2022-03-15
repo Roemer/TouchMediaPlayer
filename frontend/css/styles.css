@@ -1,0 +1,35 @@
+html {
+    border: 0px !important;
+    box-shadow: none !important;
+}
+
+ion-icon {
+    pointer-events: none; /* Disable default tooltip */
+}
+
+nav a {
+    border-bottom: 0px; /* Hide the underline */
+}
+
+nav div div ul {
+    margin: 0px !important; /* Remove the top margin for the nav items */
+}
+
+.navbutton {
+    padding: 3px;
+}
+
+.card {
+    box-shadow: none;
+}
+
+.album-swiper {
+    padding-bottom: 40px;
+}
+
+.swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 200px;
+    height: 200px;
+}

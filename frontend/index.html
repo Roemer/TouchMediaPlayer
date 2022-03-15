@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" class="paper padding-none margin-none shadow-none" style="height: 100%;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/paper.min.css" />
+    <link rel="stylesheet" href="./css/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script src="./js/vue.global.prod.js"></script>
+    <script type="module" src="./js/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="./js/ionicons/ionicons.js"></script>
+    <script src="./js/swiper-bundle.min.js"></script>
+    <title>Touch Media Player</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="border">
+            <div class="nav-brand">
+                <h4>
+                    <a href="#">
+                        <ion-icon name="film-outline"></ion-icon> Player
+                    </a>
+                </h4>
+            </div>
+            <div>
+                <div>
+                    <ul class="inline">
+                        <li>
+                            <a href="#">
+                                <button class="navbutton" @click="requestFullscreen">
+                                    <span title="Fullscreen">
+                                        <ion-icon size="large" name="image-outline"></ion-icon>
+                                    </span>
+                                </button>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <button class="navbutton" @click="exitFullscreen">
+                                    <span title="End Fullscreen">
+                                        <ion-icon size="large" name="images-outline"></ion-icon>
+                                    </span>
+                                </button>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <button class="navbutton" @click="refreshWindow">
+                                    <span title="Refresh">
+                                        <ion-icon size="large" name="refresh-outline"></ion-icon>
+                                    </span>
+                                </button>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <button class="navbutton" @click="displaySleep">
+                                    <span title="Sleep">
+                                        <ion-icon size="large" name="bed-outline"></ion-icon>
+                                    </span>
+                                </button>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <button class="navbutton" @click="closeWindow">
+                                    <span title="Exit">
+                                        <ion-icon size="large" name="close-outline"></ion-icon>
+                                    </span>
+                                </button>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Content -->
+        <div class="row margin-none">
+            <!-- Group / Media Selection -->
+            <div class="col-8 col padding-small">
+                <group-swiper>
+                    <group-card v-for="(group, index) in initialData.groups" v-bind:id="`${group.id}`" v-bind:name="`${group.title}`" v-bind:image="`${group.image}`" @clicked="groupCardClicked">
+                    </group-card>
+                </group-swiper>
+                <album-swiper v-for="(group, index) in initialData.groups" v-bind:ref="`album-swiper-${group.id}`">
+                    <album-card v-for="(album, index) in group.albums" v-bind:album="album" @clicked="albumCardClicked">
+                    </album-card>
+                </album-swiper>
+            </div>
+            <!-- Side Controls -->
+            <div class="col-4 col padding-small">
+                <audio ref="audio" @ended="audioEnded"></audio>
+                <button class="btn-small" v-on:click="audioPlay" v-if="!isPlaying">
+                    <ion-icon size="large" name="play-outline"></ion-icon>
+                </button>
+                <button class="btn-small" v-on:click="audioPause" v-if="isPlaying">
+                    <ion-icon size="large" name="pause-outline"></ion-icon>
+                </button>
+                <button class="btn-small" v-on:click="audioStop">
+                    <ion-icon size="large" name="stop-outline"></ion-icon>
+                </button>
+                <div class="form-group" style="margin: 5px 0px 0px 0px;">
+                    <input class="input-block" type="range" name="playProgress" min="0" max="100" @input="progressChange" :value="audioProgress">
+                    <div class="row" style="margin: 5px 0px 0px 0px;">
+                        <div class="col-6 col padding-none"> {{ audioCurrentTime }} </div>
+                        <div class="col-6 col padding-none" style="text-align: right;">{{ audioTotalTime }}</div>
+                    </div>
+                </div>
+
+                <div class="row margin-bottom-none margin-top-small">
+                    <div class="col-1 col margin-none padding-none" style="max-width: unset;">
+                        <ion-icon size="large" name="volume-low-outline"></ion-icon>
+                    </div>
+                    <div class="col-fill col margin-none padding-none"></div>
+                    <div class="col-1 col margin-none padding-none" style="max-width: unset;">
+                        <ion-icon size="large" name="volume-high-outline"></ion-icon>
+                    </div>
+                </div>
+                <div class="form-group margin-none">
+                    <input class="input-block" type="range" name="volume" min="0" max="100" @input="volumeChange" v-model="volumeValue" />
+                </div>
+
+                <div class="row margin-bottom-none margin-top-small">
+                    <div class="col-1 col margin-none padding-none" style="max-width: unset;">
+                        <ion-icon size="large" name="moon-outline"></ion-icon>
+                    </div>
+                    <div class="col-fill col margin-none padding-none"></div>
+                    <div class="col-1 col margin-none padding-none" style="max-width: unset;">
+                        <ion-icon size="large" name="sunny-outline"></ion-icon>
+                    </div>
+                </div>
+                <div class="form-group margin-none">
+                    <input class="input-block" type="range" name="brightness" min="0" max="100" @input="brightnessChange" />
+                </div>
+                <h5 style="margin: 10px 0px 0px 0px; overflow-wrap: break-word;">
+                    {{ currentAudio }}
+                </h5>
+            </div>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script>
+        (async () => {
+            const initialData = await loadData();
+
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        initialData: initialData,
+                        isPlaying: false,
+                        audioProgress: 0,
+                        audioCurrentTime: 0,
+                        audioTotalTime: 0,
+                        currentAudio: '',
+                        volumeValue: 100,
+                    }
+                },
+                components: {
+                    'group-swiper': Vue.defineAsyncComponent(() => import('./components/group-swiper.js')),
+                    'group-card': Vue.defineAsyncComponent(() => import('./components/group-card.js')),
+                    'album-swiper': Vue.defineAsyncComponent(() => import('./components/album-swiper.js')),
+                    'album-card': Vue.defineAsyncComponent(() => import('./components/album-card.js')),
+                },
+                methods: {
+                    requestFullscreen: function (event) {
+                        var elem = document.documentElement;
+                        if (elem.requestFullscreen) {
+                            elem.requestFullscreen();
+                        } else if (elem.mozRequestFullScreen) { /* Firefox */
+                            elem.mozRequestFullScreen();
+                        } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                            elem.webkitRequestFullscreen();
+                        } else if (elem.msRequestFullscreen) { /* IE/Edge */
+                            elem.msRequestFullscreen();
+                        }
+                    },
+                    exitFullscreen: function (event) {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.mozCancelFullScreen) { /* Firefox */
+                            document.mozCancelFullScreen();
+                        } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                            document.webkitExitFullscreen();
+                        } else if (document.msExitFullscreen) { /* IE/Edge */
+                            document.msExitFullscreen();
+                        }
+                    },
+                    refreshWindow: function (event) {
+                        location.reload();
+                    },
+                    closeWindow: function (event) {
+                        window.close();
+                    },
+                    displaySleep: async function (event) {
+                        let response = await fetch('api/sleep');
+                    },
+                    groupCardClicked: function (id) {
+                        // Category card click
+                        initialData.groups.forEach((group, index) => {
+                            this.$refs["album-swiper-" + group.id][0].setVisibility(group.id === id);
+                        });
+                    },
+                    albumCardClicked: function (album) {
+                        this.currentAudio = album.title;
+                        var audio = this.$refs["audio"];
+                        audio.src = album.media;
+                        this.audioPlay();
+                    },
+                    audioPlay: function () {
+                        var audio = this.$refs["audio"];
+                        audio.play();
+                        this.isPlaying = true;
+                    },
+                    audioPause: function () {
+                        var audio = this.$refs["audio"];
+                        audio.pause();
+                        this.isPlaying = false;
+                    },
+                    audioStop: function () {
+                        var audio = this.$refs["audio"];
+                        audio.load();
+                        this.audioProgress = 0;
+                        this.isPlaying = false;
+                    },
+                    audioEnded: function () {
+                        this.isPlaying = false;
+                    },
+                    volumeChange: function () {
+                        var audio = this.$refs["audio"];
+                        audio.volume = this.volumeValue / 100;
+                    },
+                    progressChange: function (event) {
+                        var perc = event.target.value / 100.0;
+                        this.seek(perc);
+                    },
+                    brightnessChange: function (event) {
+                        var perc = event.target.value;
+                        debouncedBrightnessChange(perc);
+                    },
+                    seek(position) {
+                        var audio = this.$refs["audio"];
+                        audio.currentTime = parseInt(audio.duration * position);
+                    },
+                },
+                mounted: function () {
+                    var audio = this.$refs["audio"];
+                    var that = this;
+                    audio.onloadedmetadata = function () {
+                        that.audioTotalTime = convertTimeHHMMSS(this.duration);
+                    };
+                    audio.ontimeupdate = function () {
+                        that.audioCurrentTime = convertTimeHHMMSS(this.currentTime);
+                        if (this.currentTime == 0) {
+                            that.audioProgress = 0
+                        } else {
+                            that.audioProgress = this.currentTime / this.duration * 100;
+                        }
+                    };
+                },
+            });
+            app.config.isCustomElement = tag => tag.startsWith('ion-');
+            app.mount('#app');
+        })();
+
+        const debouncedBrightnessChange = throttle(async (perc) => {
+            await fetch(`api/brightness?percentage=${perc}`);
+        }, 500);
+
+        async function loadData() {
+            let response = await fetch('api/data');
+            let data = await response.json();
+            return data;
+        }
+
+        function convertTimeHHMMSS(val) {
+            let hhmmss = new Date(val * 1000).toISOString().substr(11, 8);
+            return hhmmss.indexOf("00:") === 0 ? hhmmss.substr(3) : hhmmss;
+        };
+
+        // Throttle method which enures the last call comes thru
+        function throttle(func, limit) {
+            let lastFunc;
+            let lastRan;
+            return (...args) =>{
+                const context = this;
+                if (!lastRan) {
+                    func.apply(context, args)
+                    lastRan = Date.now();
+                } else {
+                    clearTimeout(lastFunc);
+                    lastFunc = setTimeout(function () {
+                        if ((Date.now() - lastRan) >= limit) {
+                            func.apply(context, args);
+                            lastRan = Date.now();
+                        }
+                    }, limit - (Date.now() - lastRan));
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

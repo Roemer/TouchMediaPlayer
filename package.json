@@ -1,0 +1,24 @@
+{
+  "name": "touch-media-player-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "serve": "node server.js",
+    "copy-frontend": "node scripts/copy-frontend-deps.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fontsource/neucha": "^4.5.3",
+    "@fontsource/patrick-hand-sc": "^4.5.4",
+    "express": "^4.17.3",
+    "ionicons": "^6.0.1",
+    "js-yaml": "^4.1.0",
+    "papercss": "^1.8.3",
+    "rpi-backlight": "^0.4.0",
+    "shelljs": "^0.8.5",
+    "swiper": "^8.0.7",
+    "vue": "^3.2.31"
+  }
+}
