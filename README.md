@@ -1,6 +1,8 @@
 # TouchMediaPlayer
 
 ## Introduction
+This project is a simplistic and child friendly media player, designed for the Raspberry Pi with the official 7" touch display.
+After configuration, it can run fully offline or portable if you do have a battery for your Pi.
 ![Media Player](.github/images/mediaplayer.png)
 
 ## Requirements
@@ -78,4 +80,6 @@ media: UrlToAudioFile
 The media is optional. Either place an mp3 in the album folder or specify an url where the media resides.
 
 ## Development
-The raspberry pi might freeze, to prevent that, disable the Typescript and Javascript langauge server from the extensions by searching for `@builtin TypeScript` and disable it for the pi.
+Development can be done locally, via VSCode Remote SSH or even VSCode Remote Container.
+
+If you use remoting on the Raspberry Pi, it might freeze due to heavy load from the language server. To prevent that, disable the Typescript and Javascript langauge server from the extensions by searching for `@builtin TypeScript` and disable it for the pi.
