@@ -96,11 +96,10 @@ function searchFile(basePath, regex) {
 
 async function setBacklight(percentage) {
     var value = Math.round(255 / 100.0 * percentage);
-    if (value < 10) {
-        // Don't set it too low so it is turned off.
-        value = 10;
+    if (value < 15) {
+        // Don't set it too low so it is turned off or too dark.
+        value = 15;
     }
-    console.log(`Setting backlight to ${value}`);
     shell.exec(`vcgencmd set_backlight ${value.toString()}`);
     return Promise.resolve();
 
