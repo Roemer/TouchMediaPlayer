@@ -100,7 +100,7 @@ async function setBacklight(percentage) {
         // Don't set it too low so it is turned off or too dark.
         value = 15;
     }
-    shell.exec(`vcgencmd set_backlight ${value.toString()}`);
+    shell.exec(`vcgencmd set_backlight ${value.toString()}`, { silent: true });
     return Promise.resolve();
 
     // Don't use that for now.
@@ -112,5 +112,5 @@ async function setBacklight(percentage) {
 }
 
 async function displaySleep() {
-    shell.exec("sleep 1; xset -display :0 s activate")
+    shell.exec("sleep 1; xset -display :0 s activate", { silent: true });
 }
