@@ -16,7 +16,10 @@ You need the following hardware for an optimal experience:
 ## Installation and Setup
 - Install Raspberry Pi OS onto the SD card
 - Make sure to disable overscan
-- Optionally install pavucontrol to easily control the default audio device without right click
+- There seems to be a bug with the display and bullseye so that the display turns grey (see https://github.com/raspberrypi/linux/issues/4686).
+  To fix this, do the following: Edit the sd card file `boot/config.txt` before inserting it into the Pi by adding `dtparam=i2c_vc_baudrate=50000`
+- There is a bug in chromium that the first tab does not load. To fix this, disable hardware acceleration in chromium.
+- Optionally install pavucontrol to easily control the default audio device without right click: `apt install pavucontrol`
 - Install Node
   - Enable the node repository:
     ```
