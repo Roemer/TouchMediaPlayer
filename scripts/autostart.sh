@@ -5,7 +5,7 @@ sleep 5s
 
 if command -v chromium > /dev/null
 then
-  chromium --kiosk --touch-events http://localhost:5000
+  chromium --touch-events http://localhost:5000
 else
-  chromium-browser --kiosk --touch-events http://localhost:5000
+  chromium-browser --touch-events http://localhost:5000
 fi
