@@ -29,6 +29,11 @@ app.get('/api/sleep', function (req, res) {
     res.sendStatus(200);
 });
 
+app.get('/api/pull', function (req, res) {
+    shell.exec("git pull");
+    res.sendStatus(200);
+});
+
 // Start the server
 var server = app.listen(port, () => {
     console.log(`Server started on port ${port}`);

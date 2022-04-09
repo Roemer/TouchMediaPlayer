@@ -67,6 +67,15 @@
                         </li>
                         <li>
                             <a href="#">
+                                <button class="navbutton" @click="gitPull">
+                                    <span title="Pull From Git">
+                                        <ion-icon size="large" name="cloud-download-outline"></ion-icon>
+                                    </span>
+                                </button>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
                                 <button class="navbutton" @click="closeWindow">
                                     <span title="Exit">
                                         <ion-icon size="large" name="close-outline"></ion-icon>
@@ -197,6 +206,9 @@
                     },
                     displaySleep: async function (event) {
                         let response = await fetch('api/sleep');
+                    },
+                    gitPull: async function(event) {
+                        let response = await fetch('api/pull');
                     },
                     groupCardClicked: function (id) {
                         // Category card click
