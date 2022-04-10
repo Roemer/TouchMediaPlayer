@@ -1,11 +1,8 @@
+#!/bin/bash
+
 script_dir=$(dirname "$0")
-lxterminal --working-directory="$script_dir/../" -e "bash -c 'node server.js';bash"
-
+# Start the server in a new terminal
+lxterminal -e "bash -c $script_dir/start_server.sh; bash" &
+# Start the browser after a small delay
 sleep 5s
-
-if command -v chromium > /dev/null
-then
-  chromium --touch-events http://localhost:5000
-else
-  chromium-browser --touch-events http://localhost:5000
-fi
+bash -c "$script_dir/start_browser.sh"
