@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+  touch-media-player:
+    container_name: touch-media-player
+    restart: unless-stopped
+    image: roemer/touch-media-player
+    volumes:
+      - '/path/to/media:/usr/src/app/media'
+    ports:
+      - '5000:5000'

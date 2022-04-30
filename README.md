@@ -52,6 +52,11 @@ You need the following hardware for an optimal experience:
   npm run serve
   ```
 
+# Alternative setup to run as Docker container
+`docker run -d -v /path/to/your/media:/usr/src/app/media -p 5000:5000 roemer/touch-media-player`
+or
+`docker compose up`
+
 ## Media Folder
 The structure of the media for the player is as follows:
 ```
@@ -86,3 +91,6 @@ The media is optional. Either place an mp3 in the album folder or specify an url
 Development can be done locally, via VSCode Remote SSH or even VSCode Remote Container.
 
 If you use remoting on the Raspberry Pi, it might freeze due to heavy load from the language server. To prevent that, disable the Typescript and Javascript langauge server from the extensions by searching for `@builtin TypeScript` and disable it for the pi.
+
+# Build the Docker Image
+`docker build -t roemer/touch-media-player .`
