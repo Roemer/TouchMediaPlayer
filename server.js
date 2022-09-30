@@ -60,7 +60,8 @@ async function buildData() {
             albums.push({
                 title: albumInfo?.title ?? albumName,
                 media: albumFile ?? albumInfo?.media,
-                cover: albumCover ?? 'images/generic_cover.png'
+                cover: albumCover ?? 'images/generic_cover.png',
+                isnew: albumInfo?.isnew ?? false,
             });
         });
         data.groups.push({

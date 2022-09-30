@@ -1,5 +1,11 @@
 const template = `
-    <div class="swiper-slide" :style="'background-image:url(' + album.cover + ')'" @click="onClicked()"></div>
+    <div class="swiper-slide"
+        :style="
+        album.isnew ?
+        'background: url(images/new.png) top right no-repeat, url(' + album.cover + '); background-size: 100px, auto;' :
+        'background: url(' + album.cover + '); background-size: auto;'
+        " @click="onClicked()">
+    </div>
 `;
 
 export default {
