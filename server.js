@@ -62,6 +62,7 @@ async function buildData() {
                 media: albumFile ?? albumInfo?.media,
                 cover: albumCover ?? 'images/generic_cover.png',
                 isnew: albumInfo?.isnew ?? false,
+                isPreviousNew: albumInfo?.isPreviousNew ?? false,
             });
         });
         data.groups.push({

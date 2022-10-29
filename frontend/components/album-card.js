@@ -3,6 +3,8 @@ const template = `
         :style="
         album.isnew ?
         'background: url(images/new.png) top right no-repeat, url(' + album.cover + '); background-size: 100px, auto;' :
+        album.isPreviousNew ?
+        'background: url(images/previous-new.png) top right no-repeat, url(' + album.cover + '); background-size: 100px, auto;' :
         'background: url(' + album.cover + '); background-size: auto;'
         " @click="onClicked()">
     </div>
