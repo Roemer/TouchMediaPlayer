@@ -1,7 +1,7 @@
 const template = `
     <div class="swiper-slide"
         :style="
-        album.isnew ?
+        album.isNew ?
         'background: url(images/new.png) top right no-repeat, url(' + album.cover + '); background-size: 100px, auto;' :
         album.isPreviousNew ?
         'background: url(images/previous-new.png) top right no-repeat, url(' + album.cover + '); background-size: 100px, auto;' :

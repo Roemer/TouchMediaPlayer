@@ -61,7 +61,7 @@ async function buildData() {
                 title: albumInfo?.title ?? albumName,
                 media: albumFile ?? albumInfo?.media,
                 cover: albumCover ?? 'images/generic_cover.png',
-                isnew: albumInfo?.isnew ?? false,
+                isNew: albumInfo?.isNew ?? false,
                 isPreviousNew: albumInfo?.isPreviousNew ?? false,
             });
         });
