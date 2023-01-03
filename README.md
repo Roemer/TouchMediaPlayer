@@ -24,7 +24,7 @@ You need the following hardware for an optimal experience:
   - Enable the node repository:
     ```
     sudo su
-    curl -fsSL https://deb.nodesource.com/setup_17.x | bash -
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
     ```
   - Install NodeJS
     ```
