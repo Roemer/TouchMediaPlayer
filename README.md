@@ -13,6 +13,29 @@ You need the following hardware for an optimal experience:
 - Mini External USB Speaker (like https://www.adafruit.com/product/3369)
 - Keyboard and Mouse for easier setup
 
+## Features
+
+### Simple UI for even small children to use
+The UI is very simplistic. It can be used without being able to read. The folders and albums can be navigated by simply swiping.
+
+### Remote control
+There is an integrated remote control to control the device from somewhere else.
+Just call their api url from anywhere and they are executed on the device.
+The following commands are available.
+| command | api url | description |
+| --- | --- | --- |
+| pause | /capi/pause | Pauses the current playback. |
+| notify | /capi/notify/\<soundName\> | Pauses the playback (if any), plays the notification sound and the given sound snippet and resumes playback. |
+
+### Integrated with Raspberry Pi
+If the raspberry pi is used, several additional methods are available. These are:
+- Control the display brightness
+- Put the display to sleep
+- Fetch the latest repository from the git
+
+### Can work completely offline after setup
+If all the media files are local, the device then works fully offline and can be taken anywhere.
+
 ## Installation and Setup
 - Install Raspberry Pi OS onto the SD card
 - Make sure to disable overscan
@@ -61,36 +84,44 @@ or
 The structure of the media for the player is as follows:
 ```
 media
-  - audio
-    - group 1
-      - folder.jpg -> Image that is served as group cover (100x100 is enough)
-      - info.yaml -> Information file for the group
-      - album 1
-        - folder.jpg -> Image for this album
-        - info.yaml -> Information file for the album
-        - album.mp3
-      - album 2
-      - ...
-    - group 2
-    - ...
+├─ audio
+│  ├─ group 1  -> First main group for albums
+│  │  ├─ folder.jpg  -> Image that is served as group cover (100x100 is enough)
+│  │  ├─ info.yaml   -> Information file for the group
+│  │  ├─ album 1     -> First album in this group
+│  │  │  ├─ album.mp3   -> The full album as one track.
+│  │  │  ├─ folder.jpg  -> Image for this album
+│  │  │  └─ info.yaml   -> Information file for the album
+│  │  ├─ album 2     -> Second album in this group
+│  │  │  └─ ...         -> Same as in album 1
+│  │  └─ ...         -> More albums in this group
+│  ├─ group 2  -> Second main group for albums
+│  │  └─ ...         -> Same as in group 1
+|  └─ ...      -> More main group for albums
+├─ effects
+│  └─ notification.mp3 -> The sound file used before a notification is played
+└─ snippets
+   ├─ <sound1.mp3> -> Sound file that can be played with with the notify api
+   ├─ <sound2.mp3> -> As above
+   └─ ... -> Even more sound files
 ```
 
-The group info.yaml looks like:
-```
+The group `info.yaml` looks like:
+```yaml
 title: GroupTitle
 ```
 
-The album info.yaml looks like:
-```
+The album `info.yaml` looks like:
+```yaml
 title: AlbumTitle
 media: UrlToAudioFile
 ```
-The media is optional. Either place an mp3 in the album folder or specify an url where the media resides.
+The `media` field is optional. Either place an mp3 in the album folder or specify an url where the media resides.
 
 ## Development
 Development can be done locally, via VSCode Remote SSH or even VSCode Remote Container.
 
-If you use remoting on the Raspberry Pi, it might freeze due to heavy load from the language server. To prevent that, disable the Typescript and Javascript langauge server from the extensions by searching for `@builtin TypeScript` and disable it for the pi.
+If you use remoting on the Raspberry Pi, it might freeze due to heavy load from the language server. To prevent that, disable the Typescript and Javascript langauge server from the extensions by searching for `@builtin TypeScript` and disable it for the Pi.
 
-# Build the Docker Image
+## Build the Docker Image
 `docker build -t roemer/touch-media-player .`

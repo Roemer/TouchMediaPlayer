@@ -1,6 +1,11 @@
+# Development
 node_modules/
-media/
+# Media
+media/audio
+media/snippets
+# CSS
 frontend/css/*
 !frontend/css/styles.css
+# JS
 frontend/js/*
 frontend/fonts/*

@@ -3,14 +3,19 @@ import path from 'path';
 import express from 'express';
 import yaml from 'js-yaml';
 import shell from 'shelljs';
+import WebSocket, { WebSocketServer } from 'ws';
 import backlight from 'rpi-backlight';
 
 const port = process.env.PORT || 5000;
+const wssport = process.env.WSSPORT || 5001;
 const app = express();
 app.set('json spaces', 2)
 app.use(express.static('frontend'));
 app.use('/media', express.static('media'));
 
+////////////////////////////////////////////////////////////
+// API for the client
+////////////////////////////////////////////////////////////
 app.get('/api/data', async function (req, res) {
     var data = await buildData();
     res.json(data);
@@ -30,6 +35,39 @@ app.get('/api/sleep', function (req, res) {
 app.get('/api/pull', function (req, res) {
     shell.exec("git pull");
     res.sendStatus(200);
+});
+
+////////////////////////////////////////////////////////////
+// API for remote control
+////////////////////////////////////////////////////////////
+app.get('/capi/pause', async function (req, res) {
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            var wsObject = createWsObject("pause");
+            client.send(JSON.stringify(wsObject));
+        }
+    });
+    res.sendStatus(200);
+});
+
+app.get('/capi/notify/:soundName', async function (req, res) {
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            var wsObject = createWsObject("notify");
+            wsObject.soundName = req.params.soundName;
+            client.send(JSON.stringify(wsObject));
+        }
+    });
+    res.sendStatus(200);
+});
+
+
+// Initialize the websocket server
+const wss = new WebSocketServer({ port: wssport });
+wss.on('connection', function connection(client) {
+    var wsObject = createWsObject("welcome");
+    wsObject.text = 'Welcome to touch media player!';
+    client.send(JSON.stringify(wsObject));
 });
 
 // Start the server
@@ -72,6 +110,12 @@ async function buildData() {
     })
     //console.log(JSON.stringify(data, null, 2));
     return data;
+}
+
+function createWsObject(method) {
+    return {
+        "method": method
+    }
 }
 
 function getSubDirectories(basePath) {

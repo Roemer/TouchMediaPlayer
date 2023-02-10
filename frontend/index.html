@@ -109,10 +109,10 @@
                 <button class="btn-small" v-on:click="audioPause" v-if="isPlaying">
                     <ion-icon size="large" name="pause-outline"></ion-icon>
                 </button>
-                <button class="btn-small" v-on:click="audioStop" style="margin-left: 10px;">
+                <button class="btn-small" v-on:click="audioStop" style="margin-left: 40px;">
                     <ion-icon size="large" name="stop-outline"></ion-icon>
                 </button>
-                <div class="form-group" style="margin: 15px 0px 0px 0px;">
+                <div class="form-group" style="margin: 25px 0px 0px 0px;">
                     <input class="input-block" type="range" name="playProgress" min="0" max="100" @input="progressChange" :value="audioProgress">
                     <div class="row" style="margin: 5px 0px 0px 0px;">
                         <div class="col-6 col padding-none"> {{ audioCurrentTime }} </div>
@@ -154,8 +154,10 @@
     <!-- Scripts -->
     <script>
         (async () => {
+            // Load the data
             const initialData = await loadData();
 
+            // Initialize the vue app
             const app = Vue.createApp({
                 data() {
                     return {
@@ -207,7 +209,7 @@
                     displaySleep: async function (event) {
                         let response = await fetch('api/sleep');
                     },
-                    gitPull: async function(event) {
+                    gitPull: async function (event) {
                         let response = await fetch('api/pull');
                     },
                     groupCardClicked: function (id) {
@@ -272,9 +274,41 @@
                             that.audioProgress = this.currentTime / this.duration * 100;
                         }
                     };
+
+                    // Initialize the websocket
+                    const ws = new WebSocket("ws://localhost:5001");
+                    ws.onmessage = function (event) {
+                        var eventData = JSON.parse(event.data);
+                        console.log(eventData);
+                        if (eventData.method === "pause") {
+                            if (that.isPlaying) {
+                                that.audioPause();
+                            }
+                        } else if (eventData.method === "notify") {
+                            var unpauseAfterwards = false;
+                            if (that.isPlaying) {
+                                that.audioPause();
+                                unpauseAfterwards = true;
+                            }
+                            sleep(200)
+                                .then(() => playAudio('media/effects/notification.mp3'))
+                                .then(() => sleep(1000))
+                                .then(() => playAudio(`media/snippets/${eventData.soundName}.mp3`))
+                                .then(() => sleep(500))
+                                .then(() => {
+                                    if (unpauseAfterwards) {
+                                        that.audioPlay();
+                                    }
+                                });
+                        } else {
+                            console.log(event.data);
+                        }
+                    }
                 },
             });
+            // Register the icon tag
             app.config.isCustomElement = tag => tag.startsWith('ion-');
+            // Mount the app
             app.mount('#app');
         })();
 
@@ -293,11 +327,23 @@
             return hhmmss.indexOf("00:") === 0 ? hhmmss.substr(3) : hhmmss;
         };
 
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function playAudio(audioUrl) {
+            return new Promise(res => {
+                var audio = new Audio(audioUrl);
+                audio.play()
+                audio.onended = res
+            })
+        }
+
         // Throttle method which ensures the last call comes thru
         function throttle(func, limit) {
             let lastFunc;
             let lastRan;
-            return (...args) =>{
+            return (...args) => {
                 const context = this;
                 if (!lastRan) {
                     func.apply(context, args)
