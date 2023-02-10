@@ -1,11 +1,9 @@
-const http = require('http');
-const url = require('url');
-const fs = require('fs');
-const path = require('path');
-const express = require('express');
-const yaml = require('js-yaml');
-const shell = require('shelljs');
-const backlight = require('rpi-backlight');
+import fs from 'fs';
+import path from 'path';
+import express from 'express';
+import yaml from 'js-yaml';
+import shell from 'shelljs';
+import backlight from 'rpi-backlight';
 
 const port = process.env.PORT || 5000;
 const app = express();
