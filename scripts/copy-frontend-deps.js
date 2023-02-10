@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 const modulesRoot = 'node_modules';
 const targetCssPath = 'frontend/css';
