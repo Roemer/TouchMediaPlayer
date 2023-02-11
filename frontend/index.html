@@ -225,20 +225,20 @@
                         this.audioPlay();
                     },
                     audioPlay: function () {
-                        var audio = this.$refs["audio"];
-                        audio.play();
-                        this.isPlaying = true;
+                        if (!this.isPlaying) {
+                            var audio = this.$refs["audio"];
+                            audio.play();
+                        }
                     },
                     audioPause: function () {
-                        var audio = this.$refs["audio"];
-                        audio.pause();
-                        this.isPlaying = false;
+                        if (this.isPlaying) {
+                            var audio = this.$refs["audio"];
+                            audio.pause();
+                        }
                     },
                     audioStop: function () {
                         var audio = this.$refs["audio"];
                         audio.load();
-                        this.audioProgress = 0;
-                        this.isPlaying = false;
                     },
                     audioEnded: function () {
                         this.isPlaying = false;
@@ -275,6 +275,26 @@
                         }
                     };
 
+                    audio.onpause = function () {
+                        that.isPlaying = false;
+                        if ('mediaSession' in navigator) {
+                            navigator.mediaSession.playbackState = 'paused';
+                        }
+                    }
+                    audio.onplay = function () {
+                        that.isPlaying = true;
+                        if ('mediaSession' in navigator) {
+                            navigator.mediaSession.playbackState = 'playing';
+                        }
+                    }
+                    audio.onabort = function () {
+                        that.audioProgress = 0;
+                        that.isPlaying = false;
+                        if ('mediaSession' in navigator) {
+                            navigator.mediaSession.playbackState = 'none';
+                        }
+                    }
+
                     // Initialize the websocket
                     const ws = new WebSocket("ws://localhost:5001");
                     ws.onmessage = function (event) {
@@ -286,13 +306,11 @@
                             }
                         } else if (eventData.method === "notify") {
                             var unpauseAfterwards = false;
-                            if (that.isPlaying) {
-                                that.audioPause();
-                                unpauseAfterwards = true;
-                            }
+                            var unpauseAfterwards = that.isPlaying;
+                            that.audioPause();
                             sleep(200)
                                 .then(() => playAudio('media/effects/notification.mp3'))
-                                .then(() => sleep(1000))
+                                .then(() => sleep(500))
                                 .then(() => playAudio(`media/snippets/${eventData.soundName}.mp3`))
                                 .then(() => sleep(500))
                                 .then(() => {
@@ -303,6 +321,15 @@
                         } else {
                             console.log(event.data);
                         }
+                    }
+
+                    // Initialize the media keys
+                    if ('mediaSession' in navigator) {
+                        navigator.mediaSession.playbackState = 'none';
+                        // TODO: They are somehow not picked up?
+                        navigator.mediaSession.setActionHandler('play', () => { console.log('play'); that.audioPlay(); });
+                        navigator.mediaSession.setActionHandler('pause', () => { console.log('pause'); that.audioPause(); });
+                        navigator.mediaSession.setActionHandler('stop', () => { console.log('stop'); that.audioStop(); });
                     }
                 },
             });
