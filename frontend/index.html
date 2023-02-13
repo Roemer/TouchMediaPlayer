@@ -83,6 +83,15 @@
                                 </button>
                             </a>
                         </li>
+                        <li>
+                            <a href="#">
+                                <button class="navbutton" @click="sendAlert">
+                                    <span title="Alert">
+                                        <ion-icon size="large" name="notifications-outline" style="color:red;"></ion-icon>
+                                    </span>
+                                </button>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -211,6 +220,9 @@
                     },
                     gitPull: async function (event) {
                         let response = await fetch('api/pull');
+                    },
+                    sendAlert: async function (event) {
+                        let response = await fetch('api/alert');
                     },
                     groupCardClicked: function (id) {
                         // Category card click

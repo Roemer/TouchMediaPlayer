@@ -37,6 +37,11 @@ app.get('/api/pull', function (req, res) {
     res.sendStatus(200);
 });
 
+app.get('/api/alert', function (req, res) {
+    shell.exec("media/scripts/alert.sh");
+    res.sendStatus(200);
+});
+
 ////////////////////////////////////////////////////////////
 // API for remote control
 ////////////////////////////////////////////////////////////
