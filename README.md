@@ -41,6 +41,8 @@ If all the media files are local, the device then works fully offline and can be
 - Make sure to disable overscan
 - There seems to be a bug with the display and bullseye so that the display turns grey (see https://github.com/raspberrypi/linux/issues/4686).
   To fix this, do the following: Edit the sd card file `boot/config.txt` before inserting it into the Pi by adding `dtparam=i2c_vc_baudrate=50000`
+- There is a new bug that does not let the display enable the screen safer. To fix this (at least on 3B+), edit `boot/config.txt` and comment out the line
+  `dtoverlay=vc4-kms-v3d`
 - There is a bug in chromium that the first tab does not load. To fix this, disable hardware acceleration in chromium.
 - Optionally install pavucontrol to easily control the default audio device without right click: `apt install pavucontrol`
 - Install Node
