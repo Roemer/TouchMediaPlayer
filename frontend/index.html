@@ -101,7 +101,7 @@
             <!-- Group / Media Selection -->
             <div class="col-8 col padding-small">
                 <group-swiper>
-                    <group-card v-for="(group, index) in initialData.groups" v-bind:id="`${group.id}`" v-bind:name="`${group.title}`" v-bind:image="`${group.image}`" @clicked="groupCardClicked">
+                    <group-card v-for="(group, index) in initialData.groups" v-bind:group="group" @clicked="groupCardClicked">
                     </group-card>
                 </group-swiper>
                 <album-swiper v-for="(group, index) in initialData.groups" v-bind:ref="`album-swiper-${group.id}`">

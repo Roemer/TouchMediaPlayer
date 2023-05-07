@@ -15,13 +15,13 @@
     "@fontsource/neucha": "^4.5.9",
     "@fontsource/patrick-hand-sc": "^4.5.10",
     "express": "^4.18.2",
-    "ionicons": "^6.1.3",
+    "ionicons": "^7.1.0",
     "js-yaml": "^4.1.0",
     "papercss": "^1.9.1",
     "rpi-backlight": "^0.4.0",
     "shelljs": "^0.8.5",
     "swiper": "^8.4.7",
     "vue": "^3.2.31",
-    "ws": "^8.12.0"
+    "ws": "^8.13.0"
   }
 }

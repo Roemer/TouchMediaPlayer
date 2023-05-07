@@ -93,11 +93,19 @@ async function buildData() {
         const groupImage = searchFile(groupDir, /.*\.(?:jpg|jpeg|png|jfif)/);
         const albumPaths = getSubDirectories(groupDir);
         const albums = [];
+        let hasNew = false;
+        let hasPreviousNew = false;
         albumPaths.forEach(albumDir => {
             const albumName = path.basename(albumDir);
             const albumInfo = readInfo(albumDir);
             const albumFile = searchFile(albumDir, /.*\.mp3/);
             const albumCover = searchFile(albumDir, /.*\.(?:jpg|jpeg|png|jfif)/);
+            if (albumInfo?.isNew) {
+                hasNew = true;
+            }
+            if (albumInfo?.isPreviousNew) {
+                hasPreviousNew = true;
+            }
             albums.push({
                 title: albumInfo?.title ?? albumName,
                 media: albumFile ?? albumInfo?.media,
@@ -110,7 +118,9 @@ async function buildData() {
             id: groupName,
             title: groupInfo?.title ?? groupName,
             image: groupImage ?? 'images/generic_cover.png',
-            albums: albums
+            albums: albums,
+            hasNew: hasNew,
+            hasPreviousNew: hasPreviousNew
         })
     })
     //console.log(JSON.stringify(data, null, 2));

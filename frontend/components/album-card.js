@@ -1,12 +1,8 @@
 const template = `
-    <div class="swiper-slide"
-        :style="
-        album.isNew ?
-        'background: url(images/new.png) top right no-repeat, url(' + album.cover + '); background-size: 100px, auto;' :
-        album.isPreviousNew ?
-        'background: url(images/previous-new.png) top right no-repeat, url(' + album.cover + '); background-size: 100px, auto;' :
-        'background: url(' + album.cover + '); background-size: auto;'
-        " @click="onClicked()">
+    <div class="swiper-slide" @click="onClicked()">
+        <img :src="album.cover" class="no-border" />
+        <img v-if="album.isPreviousNew" src="images/previous-new.png" class="no-border banner-overlay" style="width: 100px;" />
+        <img v-if="album.isNew" src="images/new.png" class="no-border banner-overlay" style="width: 100px;" />
     </div>
 `;
 
