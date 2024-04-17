@@ -358,6 +358,25 @@
         async function loadData() {
             let response = await fetch('api/data');
             let data = await response.json();
+            // Sort the data so that the ones with "isNew" are before "isPreviousNew" and then the rest, but still alphabetically sorted
+            data.groups.forEach((group, index) => {
+                group.albums.sort((a, b) => {
+                    if (a.isNew && !b.isNew) {
+                        return -1;
+                    }
+                    if (b.isNew && !a.isNew) {
+                        return 1;
+                    }
+                    if (a.isPreviousNew && !b.isPreviousNew) {
+                        return -1;
+                    }
+                    if (b.isPreviousNew && !a.isPreviousNew) {
+                        return 1;
+                    }
+                    return a.media.localeCompare(b.media);
+                });
+            });
+            // Return the data
             return data;
         }
 
