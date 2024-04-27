@@ -164,7 +164,8 @@ async function setBacklight(percentage) {
         // Don't set it too low so it is turned off or too dark.
         value = 15;
     }
-    var result = shell.exec(`vcgencmd set_backlight ${value.toString()}`, { silent: true });
+    var valueString = value.toString();
+    var result = shell.exec(`vcgencmd set_backlight ${valueString}`, { silent: true });
     if (result.code != 0) {
         // Try setting the file
         var filePath = '/sys/class/backlight/10-0045/brightness';
@@ -174,7 +175,7 @@ async function setBacklight(percentage) {
         if (!fs.existsSync(filePath)) {
             return Promise.reject("No file found");
         }
-        return fs.writeFile(filePath, value, (err) => {
+        return fs.writeFile(filePath, valueString, (err) => {
             if (err !== null) reject(err);
             else resolve();
         });
