@@ -87,6 +87,7 @@ If all the media files are local, the device then works fully offline and can be
     sudo chmod a+w /sys/class/backlight/4-0045/brightness
     ```
   - Screen Blanking in Preferences > Raspberry Pi Configuration > Display
+  - Change the display back to X-Server instead of Wayland in raspi-config -> Advanced to that the sleep works
 
 # Alternative setup to run as Docker container
 `docker run -d -v /path/to/your/media:/usr/src/app/media -p 5000:5000 roemer/touch-media-player`
