@@ -77,6 +77,16 @@ If all the media files are local, the device then works fully offline and can be
   ```
   npm run serve
   ```
+- Optional: Register autostart scripts
+  ```
+  ./scripts/autostart_register.sh
+  ```
+- To make the screen brightness and sleep working, do the follwing:
+  - Allow the server to write the correct file, eg:
+    ```
+    sudo chmod a+w /sys/class/backlight/4-0045/brightness
+    ```
+  - Screen Blanking in Preferences > Raspberry Pi Configuration > Display
 
 # Alternative setup to run as Docker container
 `docker run -d -v /path/to/your/media:/usr/src/app/media -p 5000:5000 roemer/touch-media-player`
