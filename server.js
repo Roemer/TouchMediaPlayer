@@ -164,7 +164,7 @@ async function setBacklight(percentage) {
         // Don't set it too low so it is turned off or too dark.
         value = 15;
     }
-    result = shell.exec(`vcgencmd set_backlight ${value.toString()}`, { silent: true });
+    var result = shell.exec(`vcgencmd set_backlight ${value.toString()}`, { silent: true });
     if (result.code != 0) {
         // Try setting the file
         var filePath = '/sys/class/backlight/10-0045/brightness';
