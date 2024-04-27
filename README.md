@@ -7,7 +7,7 @@ After configuration, it can run fully offline or portable if you do have a batte
 
 ## Requirements
 You need the following hardware for an optimal experience:
-- Raspberry Pi (3B+ / 4B recommended) with an appropriate SD card
+- Raspberry Pi (3B+ / 4B recommended, works also with 5) with an appropriate SD card
 - Original Raspberry Pi 7" Touchscreen
 - SmartiPi Touch 2 (Display Stand)
 - Mini External USB Speaker (like https://www.adafruit.com/product/3369)
@@ -37,13 +37,14 @@ If the raspberry pi is used, several additional methods are available. These are
 If all the media files are local, the device then works fully offline and can be taken anywhere.
 
 ## Installation and Setup
-- Install Raspberry Pi OS onto the SD card
-- Make sure to disable overscan
-- There seems to be a bug with the display and bullseye so that the display turns grey (see https://github.com/raspberrypi/linux/issues/4686).
-  To fix this, do the following: Edit the sd card file `boot/config.txt` before inserting it into the Pi by adding `dtparam=i2c_vc_baudrate=50000`
-- There is a new bug that does not let the display enable the screen safer. To fix this (at least on 3B+), edit `boot/config.txt` and comment out the line
-  `dtoverlay=vc4-kms-v3d`
-- There is a bug in chromium that the first tab does not load. To fix this, disable hardware acceleration in chromium.
+- Install Raspberry Pi OS onto the SD card aond configure it to your liking
+- RPI3B+ hints for the display:
+  - Make sure to disable overscan
+  - There seems to be a bug with the display and bullseye so that the display turns grey (see https://github.com/raspberrypi/linux/issues/4686).
+    To fix this, do the following: Edit the sd card file `boot/config.txt` before inserting it into the Pi by adding `dtparam=i2c_vc_baudrate=50000`
+  - There is a new bug that does not let the display enable the screen safer. To fix this (at least on 3B+), edit `boot/config.txt` and comment out the line
+    `dtoverlay=vc4-kms-v3d`
+  - There is a bug in chromium that the first tab does not load. To fix this, disable hardware acceleration in chromium.
 - Optionally install pavucontrol to easily control the default audio device without right click: `apt install pavucontrol`
 - Install Node
   - Enable the node repository:
