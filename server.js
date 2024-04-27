@@ -176,8 +176,8 @@ async function setBacklight(percentage) {
             return Promise.reject("No file found");
         }
         return fs.writeFile(filePath, valueString, (err) => {
-            if (err !== null) reject(err);
-            else resolve();
+            if (err !== null) Promise.reject(err);
+            else Promise.resolve();
         });
     }
     return Promise.resolve();
