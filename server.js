@@ -9,8 +9,10 @@ import backlight from 'rpi-backlight';
 const port = process.env.PORT || 5000;
 const wssport = process.env.WSSPORT || 5001;
 const app = express();
+const stateFile = '.state.json';
 app.set('json spaces', 2)
 app.use(express.static('frontend'));
+app.use(express.json())
 app.use('/media', express.static('media'));
 
 ////////////////////////////////////////////////////////////
@@ -41,6 +43,20 @@ app.get('/api/alert', function (req, res) {
     shell.exec("media/scripts/alert.sh");
     res.sendStatus(200);
 });
+
+app.get('/api/state', function (req, res) {
+    if (fs.existsSync(stateFile)) {
+        var obj = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
+        res.json(obj);
+    } else {
+        res.sendStatus(204);
+    }
+})
+
+app.post('/api/state', function (req, res) {
+    fs.writeFileSync(stateFile, JSON.stringify(req.body));
+    res.sendStatus(200);
+})
 
 ////////////////////////////////////////////////////////////
 // API for remote control
@@ -112,6 +128,8 @@ async function buildData() {
                 cover: albumCover ?? 'images/generic_cover.png',
                 isNew: albumInfo?.isNew ?? false,
                 isPreviousNew: albumInfo?.isPreviousNew ?? false,
+                groupName: groupName,
+                albumName: albumName,
             });
         });
         data.groups.push({

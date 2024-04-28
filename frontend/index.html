@@ -100,7 +100,7 @@
         <div class="row margin-none">
             <!-- Group / Media Selection -->
             <div class="col-8 col padding-small">
-                <group-swiper>
+                <group-swiper ref="group-swiper">
                     <group-card v-for="(group, index) in initialData.groups" v-bind:group="group" @clicked="groupCardClicked">
                     </group-card>
                 </group-swiper>
@@ -154,8 +154,8 @@
                 <div class="form-group margin-none">
                     <input class="input-block" type="range" name="brightness" min="0" max="100" value="100" @input="brightnessChange" />
                 </div>
-                <h5 style="margin: 10px 0px 0px 0px; overflow-wrap: break-word;">
-                    {{ currentAudio }}
+                <h5 style="margin: 10px 0px 0px 0px; overflow-wrap: break-word;" v-if="currentAlbum">
+                    {{ currentAlbum.title }}
                 </h5>
             </div>
         </div>
@@ -175,7 +175,7 @@
                         audioProgress: 0,
                         audioCurrentTime: 0,
                         audioTotalTime: 0,
-                        currentAudio: '',
+                        currentAlbum: undefined,
                         volumeValue: 100,
                     }
                 },
@@ -231,7 +231,7 @@
                         });
                     },
                     albumCardClicked: function (album) {
-                        this.currentAudio = album.title;
+                        this.currentAlbum = album;
                         var audio = this.$refs["audio"];
                         audio.src = album.media;
                         this.audioPlay();
@@ -271,8 +271,24 @@
                         var audio = this.$refs["audio"];
                         audio.currentTime = parseInt(audio.duration * position);
                     },
+                    postState: async function() {
+                        if (this.currentAlbum && this.isPlaying) {
+                            var audio = this.$refs["audio"];
+                            await fetch('api/state', {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    groupName: this.currentAlbum.groupName,
+                                    albumName: this.currentAlbum.albumName,
+                                    currentTime: audio.currentTime
+                                }),
+                                headers: {
+                                    'Content-type': 'application/json; charset=UTF-8',
+                                }
+                            });
+                        }
+                    }
                 },
-                mounted: function () {
+                mounted: async function () {
                     var audio = this.$refs["audio"];
                     var that = this;
                     audio.onloadedmetadata = function () {
@@ -333,7 +349,7 @@
                         } else {
                             console.log(event.data);
                         }
-                    }
+                    };
 
                     // Initialize the media keys
                     if ('mediaSession' in navigator) {
@@ -343,6 +359,38 @@
                         navigator.mediaSession.setActionHandler('pause', () => { console.log('pause'); that.audioPause(); });
                         navigator.mediaSession.setActionHandler('stop', () => { console.log('stop'); that.audioStop(); });
                     }
+
+                    // Try get the current state
+                    let response = await fetch('api/state');
+                    if (response.status == 200) {
+                        // Found a current state, set the data
+                        setTimeout(async () => {
+                            let data = await response.json();
+                            // Get the group and album                            
+                            let groupIndex = initialData.groups.findIndex((element) => element.id === data.groupName);
+                            if (groupIndex == -1) { return; }
+                            let group = initialData.groups[groupIndex];
+                            let albumIndex = group.albums.findIndex((element) => element.albumName === data.albumName);
+                            if (albumIndex == -1) { return; }
+                            let album = group.albums[albumIndex];
+                            // Select the group card
+                            this.$refs['group-swiper'].selectCard(groupIndex);
+                            // Show the right album swiper and select the album card
+                            let albumSwiperName = "album-swiper-" + data.groupName;
+                            this.$refs[albumSwiperName][0].setVisibility(true);
+                            this.$refs[albumSwiperName][0].selectCard(albumIndex);
+                            // Set the audio and time
+                            this.currentAlbum = album;
+                            var audio = this.$refs["audio"];
+                            audio.src = album.media;
+                            audio.currentTime = data.currentTime;
+                        }, 1000);
+                    }
+
+                    // Start the timer to post the updated state
+                    const timeoutId = setInterval(() => {
+                        that.postState();
+                    }, 30000);
                 },
             });
             // Register the icon tag

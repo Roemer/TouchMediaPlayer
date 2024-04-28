@@ -9,3 +9,5 @@ frontend/css/*
 # JS
 frontend/js/*
 frontend/fonts/*
+# State
+.state.json

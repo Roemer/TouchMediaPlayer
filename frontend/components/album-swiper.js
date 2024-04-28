@@ -17,6 +17,9 @@ export default {
     methods: {
         setVisibility(isVisible) {
             this.isVisible = isVisible;
+        },
+        selectCard: function (cardIndex) {
+            this.swiper.slideTo(cardIndex);
         }
     },
     mounted: function () {
@@ -44,6 +47,7 @@ export default {
             },
             pagination: {
                 el: this.$refs["sw-pager"],
+                type: 'fraction',
             },
         });
     },

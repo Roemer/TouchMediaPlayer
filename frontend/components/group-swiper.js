@@ -8,7 +8,7 @@ const template = `
 
 export default {
     mounted: function () {
-        const swiper = new Swiper('.group-swiper', {
+        this.swiper = new Swiper('.group-swiper', {
             slidesPerView: 'auto',
             spaceBetween: 10,
             centeredSlides: false,
@@ -16,4 +16,9 @@ export default {
         });
     },
     template: template,
+    methods: {
+        selectCard: function (cardIndex) {
+            this.swiper.slideTo(cardIndex);
+        }
+    }
 }
