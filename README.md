@@ -84,7 +84,8 @@ If all the media files are local, the device then works fully offline and can be
 - To make the screen brightness and sleep working, do the follwing:
   - Allow the server to write the correct file, eg:
     ```
-    sudo chmod a+w /sys/class/backlight/4-0045/brightness
+    echo 'SUBSYSTEM=="backlight",RUN+="/bin/chmod 666 /sys/class/backlight/%k/brightness"' | sudo tee -a /etc/udev/rules.d/backlight-permissions.rules
+    sudo udevadm control --reload-rules && sudo udevadm trigger
     ```
   - Screen Blanking in Preferences > Raspberry Pi Configuration > Display
   - Change the display back to X-Server instead of Wayland in raspi-config -> Advanced to that the sleep works
