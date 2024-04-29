@@ -186,16 +186,14 @@ async function setBacklight(percentage) {
     var result = shell.exec(`vcgencmd set_backlight ${valueString}`, { silent: true });
     if (result.code != 0) {
         // Try setting the file
-        var filePath = '/sys/class/backlight/10-0045/brightness';
-        if (!fs.existsSync(filePath)) {
-            filePath = '/sys/class/backlight/4-0045/brightness';
-        }
-        if (!fs.existsSync(filePath)) {
-            return Promise.reject("No file found");
-        }
-        return fs.writeFile(filePath, valueString, (err) => {
-            if (err !== null) Promise.reject(err);
-            else Promise.resolve();
+        var backlightPath = '/sys/class/backlight';
+        fs.readdirSync(backlightPath).forEach(file => {
+            var brightnessFile = path.join(backlightPath, file, 'brightness');
+            return fs.writeFile(brightnessFile, valueString, (err) => {
+                if (err !== null) {
+                    console.log('failed to set backlight brightness: ' + err)
+                }
+            });
         });
     }
     return Promise.resolve();
