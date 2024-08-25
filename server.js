@@ -58,6 +58,26 @@ app.post('/api/state', function (req, res) {
     res.sendStatus(200);
 })
 
+app.post('/api/bt/reconnect', async function (req, res) {
+    var resultStr = shell.exec("bluetoothctl devices");
+    const regexp = /^Device\s+([A-F0-9:]+)\s+(.*)$/gm;
+    const matches = resultStr.matchAll(regexp);
+
+    for (const match of matches) {
+        var deviceMac = match[1];
+        var deviceName = match[2];
+        console.log(`Found device '${deviceName}' (${deviceMac})`);
+        if (deviceName == "VAPPEBY Peanut") {
+            shell.exec("bluetoothctl disconnect " + deviceMac);
+            await sleep(2000);
+            shell.exec("bluetoothctl connect " + deviceMac);
+            break;
+        }
+    }
+
+    res.sendStatus(200);
+})
+
 ////////////////////////////////////////////////////////////
 // API for remote control
 ////////////////////////////////////////////////////////////
@@ -81,7 +101,6 @@ app.get('/capi/notify/:soundName', async function (req, res) {
     });
     res.sendStatus(200);
 });
-
 
 // Initialize the websocket server
 const wss = new WebSocketServer({ port: wssport });
@@ -208,4 +227,8 @@ async function setBacklight(percentage) {
 
 async function displaySleep() {
     shell.exec("sleep 1; xset -display :0 s activate", { silent: true });
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }

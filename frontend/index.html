@@ -121,6 +121,9 @@
                 <button class="btn-small" v-on:click="audioStop" style="margin-left: 40px;">
                     <ion-icon size="large" name="stop-outline"></ion-icon>
                 </button>
+                <button class="btn-small" v-on:click="audioReconnect" style="margin-left: 40px;">
+                    <ion-icon size="large" name="bluetooth-outline"></ion-icon>
+                </button>
                 <div class="form-group" style="margin: 25px 0px 0px 0px;">
                     <input class="input-block" type="range" name="playProgress" min="0" max="100" @input="progressChange" :value="audioProgress">
                     <div class="row" style="margin: 5px 0px 0px 0px;">
@@ -252,6 +255,11 @@
                         var audio = this.$refs["audio"];
                         audio.load();
                     },
+                    audioReconnect: async function () {
+                        await fetch(`api/bt/reconnect`, {
+                            method: 'POST'
+                        });
+                    },
                     audioEnded: function () {
                         this.isPlaying = false;
                     },
@@ -271,7 +279,7 @@
                         var audio = this.$refs["audio"];
                         audio.currentTime = parseInt(audio.duration * position);
                     },
-                    postState: async function() {
+                    postState: async function () {
                         if (this.currentAlbum && this.isPlaying) {
                             var audio = this.$refs["audio"];
                             await fetch('api/state', {
