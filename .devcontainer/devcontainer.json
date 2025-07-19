@@ -1,9 +1,13 @@
 {
-	"name": "Node.js",
+	"name": "TMP-Dev",
 	"build": {
-		"dockerfile": "Dockerfile",
+		"dockerfile": "Dockerfile"
 	},
-
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "22"
+		}
+	},
 	"customizations": {
 		"vscode": {
 			"settings": {},
