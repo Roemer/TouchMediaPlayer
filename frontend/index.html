@@ -242,7 +242,14 @@
                     audioPlay: function () {
                         if (!this.isPlaying) {
                             var audio = this.$refs["audio"];
-                            audio.play();
+                            var promise = audio.play();
+                            if (promise !== undefined) {
+                                promise.then(_ => {
+                                    // Autoplay started!
+                                }).catch(error => {
+                                    console.log("Autoplay was prevented: " + error);
+                                });
+                            }
                         }
                     },
                     audioPause: function () {
