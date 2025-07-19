@@ -91,6 +91,16 @@ app.get('/capi/pause', async function (req, res) {
     res.sendStatus(200);
 });
 
+app.get('/capi/play', async function (req, res) {
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            var wsObject = createWsObject("play");
+            client.send(JSON.stringify(wsObject));
+        }
+    });
+    res.sendStatus(200);
+});
+
 app.get('/capi/notify/:soundName', async function (req, res) {
     wss.clients.forEach(function each(client) {
         if (client.readyState === WebSocket.OPEN) {

@@ -340,6 +340,10 @@
                             if (that.isPlaying) {
                                 that.audioPause();
                             }
+                        } else if (eventData.method === "play") {
+                            if (!that.isPlaying) {
+                                that.audioPlay();
+                            }
                         } else if (eventData.method === "notify") {
                             var unpauseAfterwards = false;
                             var unpauseAfterwards = that.isPlaying;
