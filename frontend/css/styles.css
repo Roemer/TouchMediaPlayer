@@ -11,6 +11,10 @@ nav a {
     border-bottom: 0px; /* Hide the underline */
 }
 
+nav div {
+     margin: 0px !important;
+}
+
 nav div div ul {
     margin: 0px !important; /* Remove the top margin for the nav items */
 }
@@ -45,4 +49,22 @@ nav div div ul {
     background-size: cover;
     width: 200px;
     height: 200px;
+}
+
+dialog {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    border: none;
+    width: 800px;
+    height: 480px;
+    max-width: none;
+    max-height: none;
+    top: 0;
+    right: 0;
+    /* left: auto;
+    background-color: white;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%);
+    transition: transform 0.1s cubic-bezier(0.2, 0, 0.38, 0.9); */
 }

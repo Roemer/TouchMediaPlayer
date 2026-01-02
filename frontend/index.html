@@ -92,6 +92,15 @@
                                 </button>
                             </a>
                         </li>
+                        <li>
+                            <a href="#">
+                                <button class="navbutton" @click="showExternal">
+                                    <span title="Exit">
+                                        <ion-icon size="large" name="home-outline"></ion-icon>
+                                    </span>
+                                </button>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -118,10 +127,10 @@
                 <button class="btn-small" v-on:click="audioPause" v-if="isPlaying">
                     <ion-icon size="large" name="pause-outline"></ion-icon>
                 </button>
-                <button class="btn-small" v-on:click="audioStop" style="margin-left: 35px;">
+                <button class="btn-small" v-on:click="audioStop" style="margin-left: 20px;">
                     <ion-icon size="large" name="stop-outline"></ion-icon>
                 </button>
-                <button class="btn-small" v-on:click="audioReconnect" style="margin-left: 35px;">
+                <button class="btn-small" v-on:click="audioReconnect" style="margin-left: 20px;">
                     <ion-icon size="large" name="bluetooth-outline"></ion-icon>
                 </button>
                 <div class="form-group" style="margin: 25px 0px 0px 0px;">
@@ -163,11 +172,33 @@
             </div>
         </div>
     </div>
+
+    <dialog id="externalDialog">
+        <div style="position: absolute; top: 0; right: 0;">
+            <button id="externalCloseButton">Close</button>
+        </div>
+        <div>
+            <iframe id="externalIframe" width="100%" height="500" title="description"></iframe>
+        </div>
+    </dialog>
+
     <!-- Scripts -->
     <script>
+        const dialog = document.getElementById("externalDialog");
+        const externalCloseButton = document.getElementById("externalCloseButton");
+        const externalIframe = document.getElementById("externalIframe");
+        externalCloseButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            dialog.close();
+        });
+
         (async () => {
             // Load the data
             const initialData = await loadData();
+            const settings = await loadSettings();
+            if (settings && settings.externalUrl) {
+                externalIframe.src = settings.externalUrl;
+            }
 
             // Initialize the vue app
             const app = Vue.createApp({
@@ -180,6 +211,7 @@
                         audioTotalTime: 0,
                         currentAlbum: undefined,
                         volumeValue: 100,
+                        settings: settings
                     }
                 },
                 components: {
@@ -217,6 +249,9 @@
                     },
                     closeWindow: function (event) {
                         window.close();
+                    },
+                    showExternal: function (event) {
+                        dialog.showModal();
                     },
                     displaySleep: async function (event) {
                         let response = await fetch('api/sleep');
@@ -445,6 +480,16 @@
             });
             // Return the data
             return data;
+        }
+
+        async function loadSettings() {
+            let response = await fetch('api/settings');
+            if (response.status == 200) {
+                let data = await response.json();
+                return data;
+            } else {
+                return null;
+            }
         }
 
         function convertTimeHHMMSS(val) {

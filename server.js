@@ -10,6 +10,7 @@ const port = process.env.PORT || 5000;
 const wssport = process.env.WSSPORT || 5001;
 const app = express();
 const stateFile = '.state.json';
+const settingsFile = 'settings.json';
 app.set('json spaces', 2)
 app.use(express.static('frontend'));
 app.use(express.json())
@@ -21,6 +22,15 @@ app.use('/media', express.static('media'));
 app.get('/api/data', async function (req, res) {
     var data = await buildData();
     res.json(data);
+});
+
+app.get('/api/settings', async function (req, res) {
+    if (fs.existsSync(settingsFile)) {
+        var obj = JSON.parse(fs.readFileSync(settingsFile, 'utf8'));
+        res.json(obj);
+    } else {
+        res.sendStatus(204);
+    }
 });
 
 app.get('/api/brightness', async function (req, res) {
